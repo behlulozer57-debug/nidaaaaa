@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nida 💗</title>
+<style>
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  background:linear-gradient(135deg,#ffd6e8,#ffeef6);
+}
+.chat-container{
+  max-width:420px;
+  margin:auto;
+  padding:10px;
+}
+.chat-header{
+  background:#ff4f9a;
+  color:white;
+  padding:14px;
+  border-radius:14px 14px 0 0;
+  text-align:center;
+  font-weight:600;
+}
+.typing{font-size:12px;opacity:.9;text-align:center;margin-bottom:4px;}
+
+.chat-box{
+  background:#f7f7f7;
+  min-height:220px;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  border-radius:0 0 14px 14px;
+  overflow-y:auto;
+}
+
+.message{
+  max-width:75%;
+  padding:10px 14px;
+  margin:6px 0;
+  border-radius:14px;
+  font-size:14px;
+  animation:pop .25s ease;
+}
+.from-nida{
+  background:white;
+  align-self:flex-start;
+  border-top-left-radius:4px;
+}
+.from-you{
+  background:#dcf8c6;
+  align-self:flex-end;
+  border-top-right-radius:4px;
+}
+@keyframes pop{
+  from{transform:scale(.9);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+.btn{
+  margin-top:6px;
+  width:48%;
+  padding:12px;
+  border:none;
+  border-radius:25px;
+  background:#ff4f9a;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+.input-container{
+  display:flex;
+  gap:4px;
+  margin-top:10px;
+}
+
+.quiz{
+  background:white;
+  margin-top:14px;
+  padding:14px;
+  border-radius:14px;
+  font-size:14px;
+}
+.quiz button{
+  margin-top:8px;
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#ff85b6;
+  color:white;
+  cursor:pointer;
+}
+
+.score{margin-top:8px;font-weight:bold}
+.comment{margin-top:6px;opacity:.85}
+
+.confetti{
+  position:fixed;
+  top:-10px;
+  width:8px;
+  height:8px;
+  animation:fall 2.5s linear forwards;
+}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);opacity:0}
+}
+</style>
+</head>
+<body>
+<div class="chat-container">
+  <div class="chat-header">
+    Nida 💗
+    <div class="typing" id="typing">çevrimiçi</div>
+  </div>
+  <div class="chat-box" id="chatBox"></div>
+
+  <!-- Mesaj input ve gönder butonu -->
+  <div class="input-container">
+    <input type="text" id="userInput" placeholder="Mesaj yaz..." style="flex:1;padding:10px;border-radius:20px;border:1px solid #ccc;font-size:14px">
+    <button class="btn" onclick="sendUserMessage()">Gönder</button>
+  </div>
+
+  <div class="quiz">
+    <b id="quizQuestion">Mini Quiz 🎯</b>
+    <div id="quizOptions"></div>
+    <div class="score" id="score"></div>
+    <div class="comment" id="comment"></div>
+  </div>
+</div>
+
+<script>
+// WhatsApp tarzı kısa pop sesi
+const msgSound = new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg");
+
+// Nida mesaj havuzu
+const nidaMessages = [
+ "Eşşşek kuzum benimm 😄",
+ "Şimdi ne yapıyoruz ya 😂",
+ "Bak yine güldüm sana",
+ "Hayatım bazen çok komik oluyorsun 😏",
+ "Sence pizza mı burger mi? 🍕🍔",
+ "Azıcık takılıyorum sana 😌",
+ "Ooo merak ettim şimdi 🤔",
+ "Hadi bi kahve içelim 😄",
+ "Şapşal şey 😂",
+ "Kalbimi alıp kaçtın haberin olsun",
+ "Bazen çok tatlı oluyorsun 💗",
+ "Hadi bakalım, ne yapıcaz?",
+ "Naptın tekem?",
+ "Napıyım sadıç oturuyooom 😂",
+ "Baya güzelsin bugün",
+ "Çok hoşuma gidiyosun",
+ "Seni yiyesim geliyo",
+ "Sesin çook güzel",
+ "Ses atsana kuzum benim..."
+];
+let usedNida=[];
+
+// Mesaj gönderme
+function sendUserMessage(){
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if(text==="") return;
+  appendMessage(text,'from-you');
+  input.value="";
+  setTimeout(()=>{
+    if(usedNida.length === nidaMessages.length) usedNida=[];
+    let pool = nidaMessages.filter(m=>!usedNida.includes(m));
+    let nidaMsg = pool[Math.floor(Math.random()*pool.length)];
+    usedNida.push(nidaMsg);
+    appendMessage(nidaMsg,'from-nida');
+  },700);
+}
+
+function appendMessage(text,className){
+  const div = document.createElement("div");
+  div.className = "message "+className;
+  div.innerText = text;
+  document.getElementById("chatBox").appendChild(div);
+  msgSound.currentTime=0;
+  msgSound.play().catch(()=>{});
+  scrollChat();
+}
+
+function scrollChat(){
+  const chat=document.getElementById("chatBox");
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Quiz soruları
+const quiz=[
+ {q:"Ben sana en çok ne diyorum?",o:["Canım","Hatunum","Tatlım","Aşkım"],c:3},
+ {q:"Sevgi dozajım?",o:["Az","Normal","Çoook","Belli değil"],c:2},
+ {q:"Beni kızdıran şey?",o:["Trip","Sessizlik","Soğukluk","Hepsi"],c:2},
+ {q:"Bana en çok yakışan?",o:["Ciddi","Cool","Şapşal","Hepsi"],c:3},
+ {q:"En sevdiğim emoji?",o:["😂","😍","😏","😌"],c:0},
+ {q:"Ben sana hangi kelimeyi sık kullanırım?",o:["Bitanem","Hayatım","Canım","Hepsi"],c:3}
+];
+let qi=0,score=0;
+
+function loadQuiz(){
+  const q=quiz[qi];
+  document.getElementById("quizQuestion").innerText=q.q;
+  const box=document.getElementById("quizOptions");
+  box.innerHTML="";
+  q.o.forEach((x,i)=>{
+    const b=document.createElement("button");
+    b.innerText=x;
+    b.onclick=()=>{
+      if(i===q.c) score++;
+      qi++;
+      if(qi<quiz.length) loadQuiz();
+      else finishQuiz();
+      updateScore();
+    };
+    box.appendChild(b);
+  });
+  updateScore();
+}
+
+function updateScore(){
+  document.getElementById("score").innerText=`Skor: ${score}/${quiz.length}`;
+}
+
+function finishQuiz(){
+  const percent=Math.round(score/quiz.length*100);
+  const t = percent>=75?"Beni baya tanıyorsun 😄":"Fena değil ama çalışılır 😏";
+  document.getElementById("comment").innerText=`Beni %${percent} tanıyor. ${t}`;
+  confetti();
+}
+
+function confetti(){
+  for(let i=0;i<70;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=`hsl(${Math.random()*360},80%,60%)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+loadQuiz();
+
+// Açılışta 2 mesaj
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    appendMessage("Naptın tekem?",'from-nida');
+  },400);
+  setTimeout(()=>{
+    appendMessage("Baya güzelsin bugün",'from-nida');
+  },1200);
+});
+</script>
+</body>
+</html>
